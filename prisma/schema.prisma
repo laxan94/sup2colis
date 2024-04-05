@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Colis {
+  id         Int         @id @default(autoincrement())
+  nom        String
+  poids      Float
+  stock      Int
+  livraisons Livraison[]
+  entrepotId Int
+  entrepot   Entrepot    @relation(fields: [entrepotId], references: [id])
+}
+
+model Livraison {
+  id           Int      @id @default(autoincrement())
+  expediteur   String
+  destinataire String
+  dateEnvoi    DateTime
+  quantite     Int
+  statut       String
+  colisId      Int
+  colis        Colis    @relation(fields: [colisId], references: [id])
+}
+
+model Entrepot {
+  id       Int     @id @default(autoincrement())
+  nom      String
+  adresse  String
+  capacite Int
+  colis    Colis[]
+}
